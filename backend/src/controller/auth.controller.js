@@ -1,0 +1,56 @@
+import bcrypt from "bcryptjs";
+import User from "../models/user.model.js";
+import { genarateToken } from "../lib/utils.js";
+
+export const signUp = async (req, res) => {
+    const { fullName, email, password } = req.body;
+
+    try {
+        // Required fields
+        if (!fullName || !email || !password) {
+            return res.status(400).json({ message: "All fields are required" });
+        }
+
+        // Password length
+        if (password.length < 8) {
+            return res.status(400).json({ message: "Password must be at least 8 characters" });
+        }
+
+        // Email validation
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({ message: "Invalid email format" });
+        }
+
+        // User exists?
+        const userExists = await User.findOne({ email });
+        if (userExists) {
+            return res.status(400).json({ message: "This email already has an account" });
+        }
+
+        // Hash password
+        const salt = await bcrypt.genSalt(10);
+        const hashPass = await bcrypt.hash(password, salt);
+
+        // Create user
+        const newUser = new User({
+            fullName,
+            email,
+            password: hashPass
+        });
+
+        // Token + save
+        await newUser.save();
+        genarateToken(newUser._id, res);
+
+        res.status(201).json({
+            _id: newUser._id,
+            fullName: newUser.fullName,
+            profilePic: newUser.profilePic
+        });
+
+    } catch (error) {
+        console.log("Error in signup controller:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
