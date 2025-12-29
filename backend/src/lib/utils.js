@@ -1,10 +1,12 @@
 import jwt from "jsonwebtoken"
 
+//genrating token
 export const genarateToken = (userID, res) => {
     const token = jwt.sign({ userID }, process.env.JWT_SECRATE, {
-        expiresIn: "7D"
+        expiresIn: "7D" // token will expair in 7 days
     });
 
+    //genarating coockie
     res.cookie("jwt", token, {
         maxAge: 7 * 20 * 60 * 1000,  //miliseconds
 

@@ -11,7 +11,7 @@ const app = express()
 app.use(express.json())// req body and must be on top
 const __dirname = path.resolve();
 const PORT = process.env.PORT || 8000;
-// req body and must be on top
+
 
 
 //auth route
@@ -34,5 +34,5 @@ if (process.env.NODE_ENV === "production") {
 
 app.listen(PORT , ()=>{
     console.log("Server running on port:", +PORT)
-    connectDB()
+    connectDB()//connect database with server
 });
