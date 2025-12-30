@@ -8,9 +8,9 @@ export const genarateToken = (userID, res) => {
 
     //genarating coockie
     res.cookie("jwt", token, {
-        maxAge: 7 * 20 * 60 * 1000,  //miliseconds
+        maxAge: 7 * 24 * 60 * 60* 1000,  //miliseconds
 
-        httpOnly: true,// prevent xss attacks : cross sign scripting
+        httpOnly: true,// prevent xss attacks : cross sight scripting
         sameSite: "strict", //csrf attaks
         secure: process.env.NODE_ENV === "development" ? false : true,
         //devlopment= http://localhost
