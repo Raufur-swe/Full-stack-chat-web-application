@@ -1,4 +1,4 @@
-import bcrypt from "bcryptjs";
+import bcrypt, { truncates } from "bcryptjs";
 import User from "../models/user.model.js";
 import { genarateToken } from "../lib/utils.js";
 import { sendWelcomeEmail } from "../emials/emailHandelers.js";
@@ -60,17 +60,53 @@ export const signUp = async (req, res) => {
             // send welcome email to user
 
             try {
-                await sendWelcomeEmail(savedUser.email,savedUser.fullName,process.env.CLIENT_URL);
+                await sendWelcomeEmail(savedUser.email, savedUser.fullName, process.env.CLIENT_URL);
             } catch (error) {
-                console.error("Failed to send welcome email:",error)
+                console.error("Failed to send welcome email:", error)
 
             }
-        }else{
-            res.status(400).json({massage:"Invalid user data"});
+        } else {
+            res.status(400).json({ massage: "Invalid user data" });
         }
 
     } catch (error) {
         console.log("Error in signup controller:", error);
         res.status(500).json({ message: "Internal server error" });
     }
+};
+
+
+// login routes
+
+export const login = async (req, res) => {
+    const { email, password } = req.body
+
+    if (!email || !password) {
+        return res.status(400).json({massage : "email and password required"});
+    }
+    
+    try {
+        const user = await User.findOne({ email })
+        if (!user) return res.status(400).json({ massage: "Invalid credentials" }); // never tell user which on incorrect
+        const isPassCorrect = await bcrypt.compare(password, user.password)
+        if (!isPassCorrect) return res.status(400).json({ massage: "Invalid credentials" });
+        genarateToken(user._id, res)
+        res.status(200).json({
+            _id: user._id,
+            fullName: user.fullName,
+            email: user.email,
+            profilePic: user.profilePic,
+        });
+    } catch (error) {
+
+        console.log("Error in login controller:", error);
+        res.status(500).json({ massage: "Invalid credentials" });
+    }
+}
+
+// logout
+
+export const logout = (_, res) => {
+    res.cookie("jwt", "", { maxAge: 0 });
+    res.status(200).json({ massage: "Logout successfully" });
 };
