@@ -3,6 +3,7 @@ import User from "../models/user.model.js";
 import { genarateToken } from "../lib/utils.js";
 import { sendWelcomeEmail } from "../emials/emailHandelers.js";
 import dotenv from "dotenv"
+import cloudinary from "../lib/cludinary.js";
 dotenv.config();
 
 //sign up routes
@@ -82,9 +83,9 @@ export const login = async (req, res) => {
     const { email, password } = req.body
 
     if (!email || !password) {
-        return res.status(400).json({massage : "email and password required"});
+        return res.status(400).json({ massage: "email and password required" });
     }
-    
+
     try {
         const user = await User.findOne({ email })
         if (!user) return res.status(400).json({ massage: "Invalid credentials" }); // never tell user which on incorrect
@@ -109,4 +110,48 @@ export const login = async (req, res) => {
 export const logout = (_, res) => {
     res.cookie("jwt", "", { maxAge: 0 });
     res.status(200).json({ massage: "Logout successfully" });
+};
+
+// updateProfile
+
+// Controller function to update user profile picture
+export const updateProfile = async (req, res) => {
+    try {
+        // Extract profilePic from request body
+        const { profilePic } = req.body;
+
+        // If profile picture is not provided, return bad request
+        if (!profilePic) {
+            return res.status(400).json({
+                message: "Profile pic is required"
+            });
+        }
+
+        // Get user ID from request body
+        // (Usually this should come from req.user after auth middleware)
+        const userID = req.user._id;
+
+        // Upload profile picture to Cloudinary
+        const uploadResponse = await cloudinary.uploader.upload(profilePic);
+
+        // Update user's profilePic field in database
+        // secure_url is the HTTPS image URL provided by Cloudinary
+        const updatedUser = await User.findByIdAndUpdate(
+            userID,
+            { profilePic: uploadResponse.secure_url },
+            { new: true } // Return updated document
+        );
+
+        // Send updated user data as response
+        res.status(200).json(updatedUser);
+
+    } catch (error) {
+        // Log error for debugging
+        console.log("Error in update profile:", error);
+
+        // Send internal server error response
+        res.status(500).json({
+            message: "Internal server error"
+        });
+    }
 };

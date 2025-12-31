@@ -1,6 +1,7 @@
 import express from "express"
 import dotenv from "dotenv"
 import path from "path"
+import cookieParser from "cookie-parser"
 import authRoute from "./routes/auth.route.js"
 import massageRoute from "./routes/massage.route.js"
 import  {connectDB}  from "./lib/db.js"
@@ -9,6 +10,7 @@ import  {connectDB}  from "./lib/db.js"
 dotenv.config();
 const app = express()
 app.use(express.json())// req body and must be on top
+app.use(cookieParser())
 const __dirname = path.resolve();
 const PORT = process.env.PORT || 8000;
 
