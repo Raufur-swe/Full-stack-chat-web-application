@@ -53,6 +53,17 @@ export const sendMessage = async (req, res) => {
         const { id: receverId } = req.params;
         const senderId = req.user._id;
 
+if (!text && !image) {
+    return res.status(400).json({massage : "Text or image is required."});
+}
+
+
+const receverExit = await User.exists({_id : receverId});
+if(!receverExit){
+     return res.status(400).json({massage : "receiver not found."});
+}
+
+
         let imageUrl;
         if (image) {
             // upload base64 image to cloudinary
