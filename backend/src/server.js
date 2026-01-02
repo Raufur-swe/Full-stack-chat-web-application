@@ -11,6 +11,7 @@ dotenv.config();
 const app = express()
 app.use(express.json())// req body and must be on top
 app.use(cookieParser())
+app.set("trust proxy", true); // ✅ MUST
 const __dirname = path.resolve();
 const PORT = process.env.PORT || 8000;
 

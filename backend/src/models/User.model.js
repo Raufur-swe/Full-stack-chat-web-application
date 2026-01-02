@@ -1,29 +1,35 @@
 import mongoose from "mongoose";
 
-const userSchema = new mongoose.Schema({
-    email : {
-        type : String,
-        required : true,
-        unique:true,
+// User schema definition
+const userSchema = new mongoose.Schema(
+    {
+        email: {
+            type: String,
+            required: true,
+            unique: true,
+        },
+        fullName: {
+            type: String,
+            required: true,
+            unique: true,
+        },
+        password: {
+            type: String,
+            required: true,
+            minlength: 8,
+        },
+        profilePic: {
+            type: String,
+            default: "",
+        },
     },
-    fullName : {
-        type : String,
-        required : true,
-        unique:true,
-    },
-    password : {
-        type : String,
-        required : true,
-        minlength : 8,
-    },
-    profilePic: {
-        type : String,
-        default : ""
-    },
-} ,
-{timestamps : true} // creat and updated date
-)
+    {
+        timestamps: true, // createdAt & updatedAt
+    }
+);
 
-const User = mongoose.model("User",userSchema)
+// ✅ SAFE model creation (prevents overwrite error)
+const User =
+    mongoose.models.User || mongoose.model("User", userSchema);
 
-export default User
+export default User;

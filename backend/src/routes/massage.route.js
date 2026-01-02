@@ -1,17 +1,21 @@
 import express from "express";
-
-const router = express.Router()
-
-// send massage
-router.get("/send" , (req , res)=>{
-    res.send("Send massage endpoint");
-});
-// reseive massage
+import { getAllContacts, getChatpertner, getMessagesByUserId, sendMessage } from "../controller/massage.controller.js";
+import { protectRoute } from "../middleware/auth.middleware.js";
+import { arcjetProtection } from "../middleware/arcjet.middleware.js";
 
 
-router.get("/receive" , (req , res)=>{
-    res.send("Receive massage endpoint");
-});
+const router = express.Router();
+
+
+router.use(arcjetProtection, protectRoute)
+// contacts routes
+router.get("/contacts", getAllContacts);
+// //chats routes
+router.get("/chats", getChatpertner);
+// // get messages
+router.get("/:id", getMessagesByUserId);
+// //sending mesages
+router.post("/send/:id", sendMessage)
 
 
 

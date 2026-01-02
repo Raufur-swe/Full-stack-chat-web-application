@@ -1,10 +1,20 @@
 import express, { Router } from "express";
 import { login, logout, signUp, updateProfile } from "../controller/auth.controller.js";
 import { protectRoute } from "../middleware/auth.middleware.js";
+import { arcjetProtection } from "../middleware/arcjet.middleware.js";
 
 
 
 const router = express.Router();
+
+//test route
+// router.get("/test", arcjetProtection ,(req ,res)=>{
+//     res.status(200).json({massage : "Test pass successfully"})
+// })
+
+// protection toute for liiting too much login at a time
+
+router.use(arcjetProtection);
 
 //signup route
 router.post("/signup",signUp)

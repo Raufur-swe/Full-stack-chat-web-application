@@ -12,6 +12,10 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@arcjet/astro": "^1.0.0-beta.15",
+    "@arcjet/inspect": "^1.0.0-beta.15",
+    "@arcjet/node": "^1.0.0-beta.15",
+    "@astrojs/node": "^9.5.1",
     "bcryptjs": "^3.0.3",
     "chat-app": "file:..",
     "cloudinary": "^2.8.0",

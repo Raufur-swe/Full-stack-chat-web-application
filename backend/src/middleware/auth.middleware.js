@@ -5,7 +5,7 @@
 import jwt, { decode } from "jsonwebtoken";
 
 // Import User model to fetch user data from database
-import User from "../models/user.model.js";
+import User from "../models/User.model.js";
 
 // Import environment variables (JWT secret key)
 import { ENV } from "../lib/env.js";
@@ -60,3 +60,6 @@ export const protectRoute = async (req, res, next) => {
         });
     }
 };
+
+
+
