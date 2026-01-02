@@ -18,8 +18,6 @@ export const getAllContacts = async (req, res) => {
     }
 }
 
-
-
 //getMessagesByUserId
 
 export const getMessagesByUserId = async (req, res) => {
@@ -53,15 +51,15 @@ export const sendMessage = async (req, res) => {
         const { id: receverId } = req.params;
         const senderId = req.user._id;
 
-if (!text && !image) {
-    return res.status(400).json({massage : "Text or image is required."});
-}
+        if (!text && !image) {
+            return res.status(400).json({ massage: "Text or image is required." });
+        }
 
 
-const receverExit = await User.exists({_id : receverId});
-if(!receverExit){
-     return res.status(400).json({massage : "receiver not found."});
-}
+        const receverExit = await User.exists({ _id: receverId });
+        if (!receverExit) {
+            return res.status(400).json({ massage: "receiver not found." });
+        }
 
 
         let imageUrl;
@@ -103,7 +101,7 @@ export const getChatpertner = async (req, res) => {
         ),
         ]
 
-        const chatPartners = await User.find({_id:{$in : chatPartnerId}}).select("-password")
+        const chatPartners = await User.find({ _id: { $in: chatPartnerId } }).select("-password")
         res.status(200).json(chatPartners)
     } catch (error) {
 
