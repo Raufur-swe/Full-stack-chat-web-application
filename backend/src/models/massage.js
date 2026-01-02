@@ -23,6 +23,8 @@ const messageSchema = new mongoose.Schema(
         // Text message
         text: {
             type: String,
+            trim : true,
+            maxlength : 2000,
         },
 
         // Image URL (optional)
